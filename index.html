@@ -28,10 +28,8 @@ header{border-bottom:1px solid var(--border);background:rgba(8,12,18,.85);backdr
 .logo-sub{font-size:.68rem;color:var(--text3);font-family:monospace;margin-top:1px}
 .hdr-r{display:flex;align-items:center;gap:.6rem}
 .pill{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;border:1px solid rgba(245,158,11,.3);background:rgba(245,158,11,.08);color:var(--accent)}
-.key-btn{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:500;padding:5px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
-.key-btn:hover{background:var(--s3);color:var(--text)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--red);transition:background .3s;flex-shrink:0}
-.dot.ok{background:var(--green)}
+.key-btn{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:500;padding:5px 13px;border-radius:8px;border:1px solid rgba(16,185,129,.3);background:rgba(16,185,129,.1);color:var(--green);font-family:inherit;cursor:default}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
 /* Hero */
 .hero{text-align:center;padding:2.5rem 0 1.75rem}
 .hero h1{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;line-height:1.25;margin-bottom:.5rem}
@@ -97,20 +95,6 @@ table.dt tr:last-child td{border-bottom:none}
 .nm{font-family:monospace;color:var(--accent2)!important}
 .empty{text-align:center;padding:3rem 2rem;color:var(--text3);font-size:.85rem}
 .ei{font-size:1.75rem;display:block;margin-bottom:.6rem;opacity:.45}
-/* Modal */
-.mbg{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
-.mbg.open{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border2);border-radius:16px;padding:1.75rem;width:100%;max-width:460px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.modal h2{font-size:1rem;font-weight:700;margin-bottom:.35rem}
-.modal p{font-size:.8rem;color:var(--text2);line-height:1.65;margin-bottom:1.1rem}
-.ms{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;margin-bottom:.45rem;font-size:.78rem;color:var(--text2);display:flex;align-items:center;gap:.55rem}
-.sb{background:var(--accent);color:#000;font-size:.62rem;font-weight:800;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ml{color:var(--accent);text-decoration:underline}
-label.lbl{font-size:.76rem;font-weight:600;color:var(--text2);display:block;margin:.9rem 0 .35rem}
-.modal input{width:100%;padding:.6rem .9rem;background:var(--s3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:.83rem;font-family:monospace;outline:none}
-.modal input:focus{border-color:var(--accent)}
-.mf{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.1rem}
-footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-size:.72rem;color:var(--text3)}
 .fade{animation:fi .3s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
@@ -125,8 +109,8 @@ footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-
     <div><div class="logo-text">KMR Logistics</div><div class="logo-sub">packing-list → excel</div></div>
    </div>
    <div class="hdr-r">
-    <span class="pill">Groq AI</span>
-    <button class="key-btn" onclick="openM()"><span class="dot" id="dot"></span><span id="klbl">API Key</span></button>
+    <span class="pill">Gemini AI</span>
+    <div class="key-btn"><span class="dot"></span>API ئامادەیە</div>
    </div>
   </div>
  </div>
@@ -135,12 +119,12 @@ footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-
 <div class="wrap">
  <div class="hero fade">
   <h1>وێنەی Packing List بنێرە<br><em>Excel وەربگرە</em></h1>
-  <p>Groq AI وێنەکە دەخوێنێتەوە و خۆکار دەیکاتە فایلی Excel پیشەیی</p>
+  <p>بەهێزکراو بە Google Gemini 2.0 (بە سیستەمی خۆکارانەی تێپەڕاندنی لیمیت)</p>
  </div>
  <div class="steps">
-  <div class="step active" id="st1"><div class="sn">١</div><span>API Key</span></div>
+  <div class="step done" id="st1"><div class="sn">✓</div><span>API Key</span></div>
   <div class="sl"></div>
-  <div class="step" id="st2"><div class="sn">٢</div><span>وێنە هەڵبژێرە</span></div>
+  <div class="step active" id="st2"><div class="sn">٢</div><span>وێنە هەڵبژێرە</span></div>
   <div class="sl"></div>
   <div class="step" id="st3"><div class="sn">٣</div><span>AI دەخوێنێتەوە</span></div>
   <div class="sl"></div>
@@ -152,7 +136,7 @@ footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-
     <div class="ch"><span class="ct">هەڵبژاردنی وێنە</span><span style="font-size:.68rem;color:var(--text3)">PNG · JPG · WEBP</span></div>
     <div class="cb">
      <div id="dz">
-      <input type="file" id="fi" accept="image/*" onchange="onFile(this.files[0])">
+      <input type="file" id="fi" accept=".jpg, .jpeg, .png, .webp">
       <span class="di">🖼️</span><p class="dt">وێنە بکێشە ئێرە</p><p class="ds">یان کلیک بکە بۆ هەڵبژاردن</p>
      </div>
      <img id="ipreview" alt="">
@@ -176,7 +160,7 @@ footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-
    <div class="card fade">
     <div class="ch"><span class="ct">داتاکانی دەرکەوتوو</span><span id="rcnt" style="font-size:.7rem;color:var(--text3);font-family:monospace"></span></div>
     <div style="padding:0">
-     <div class="empty" id="tempty"><span class="ei">📋</span>پێشبینی داتاکان ئێرە دەردەکەوێت<br>دوای کلیک کردن لەسەر <b>پێشبینی</b></div>
+     <div class="empty" id="tempty"><span class="ei">📋</span>پێشبینی داتاکان ئێرە دەردەکەوێت<br>دوای کلیک کردن لەسەر <b>پێشبینی</b> یان <b>بکاتەوە بە Excel</b></div>
      <div class="ts" id="twrap" style="display:none"></div>
     </div>
    </div>
@@ -184,46 +168,14 @@ footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-
  </div>
 </div>
 
-<footer>KMR Logistics · Powered by Groq AI · بەبێ سێرڤەر و بەبێ ڤی پی ئێن</footer>
-
-<div class="mbg" id="mbg" onclick="closeMBg(event)">
- <div class="modal">
-  <h2>🔑 &nbsp;دانانی Groq API Key</h2>
-  <p>پێویستت بە ڤی پی ئێن نییە! ئەکاونتێک لەسەر Groq بە خۆڕایی دروست بکە و لە عێراق کاری پێ بکە.</p>
-  <div class="ms"><span class="sb">١</span>بڕۆ بۆ &nbsp;<a class="ml" href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a></div>
-  <div class="ms"><span class="sb">٢</span>لەگەڵ Gmail یان هەر ئیمەیڵێک بچۆ ژوورەوە</div>
-  <div class="ms"><span class="sb">٣</span>کلیک بکە &nbsp;<b>Create API Key</b> &nbsp;— کۆپی بکە</div>
-  <div class="ms"><span class="sb">٤</span>ئێرە بنووسە و خەزن بکە</div>
-  <label class="lbl">Groq API Key</label>
-  <input type="password" id="kinput" placeholder="gsk_..." autocomplete="off" dir="ltr" style="text-align: left; letter-spacing: 1px;">
-  <div class="mf">
-   <button class="btn bg" onclick="closeM()">داخستن</button>
-   <button class="btn bp" style="width:auto" onclick="saveKey()">✓ &nbsp;خەزن بکە</button>
-  </div>
- </div>
-</div>
-
 <script>
-const SK='kmr_gkey';
-let curFile=null,extracted=null;
+// ==========================================
+// تکایە ئەی پی ئایەکەی گـووگـڵ جـێـمـنـای (Gemini) خۆت لێرە دابنێ:
+// (دەبێت بە AIzaSy دەست پێ بکات)
+const GEMINI_API_KEY = "AIzaSyA0CDnMI7XFNVjgIzazAdMdZPA-wzOEnpw";
+// ==========================================
 
-function getK(){return localStorage.getItem(SK)||''}
-function chkKey(){
-  const k=getK();
-  document.getElementById('dot').className='dot'+(k?' ok':'');
-  document.getElementById('klbl').textContent=k?'API Key ✓':'API Key';
-  setStep(k?2:1);
-}
-function openM(){document.getElementById('kinput').value=getK();document.getElementById('mbg').classList.add('open')}
-function closeM(){document.getElementById('mbg').classList.remove('open')}
-function closeMBg(e){if(e.target===document.getElementById('mbg'))closeM()}
-function saveKey(){
-  const k=document.getElementById('kinput').value.trim();
-  if(!k){alert('تکایە API Key بنووسە');return}
-  localStorage.setItem(SK,k);closeM();chkKey();
-  showSt('✓ API Key خەزن کرا','ok');
-  if(curFile)enBtn(true);
-}
+let curFile=null,extracted=null;
 
 function setStep(n){
   ['st1','st2','st3','st4'].forEach((id,i)=>{
@@ -234,10 +186,18 @@ function setStep(n){
 }
 
 function onFile(f){
-  if(!f)return;
+  if(!f) return;
+  if(!f.type.startsWith('image/')) {
+    alert('تکایە تەنها وێنەیەک هەڵبژێرە (وەک JPG یان PNG)');
+    return;
+  }
   curFile=f;extracted=null;
   const r=new FileReader();
-  r.onload=e=>{const p=document.getElementById('ipreview');p.src=e.target.result;p.style.display='block'};
+  r.onload=e=>{
+    const p=document.getElementById('ipreview');
+    p.src=e.target.result;
+    p.style.display='block';
+  };
   r.readAsDataURL(f);
   document.getElementById('dz').style.display='none';
   document.getElementById('fm').style.display='flex';
@@ -245,40 +205,51 @@ function onFile(f){
   document.getElementById('fsize').textContent=(f.size/1024).toFixed(0)+' KB';
   document.getElementById('bdl').style.display='none';
   clearTbl();hideSt();
-  if(getK())enBtn(true);
-  else{showSt('تکایە پێش هەموو شتێک API Key بدەرەوە','err');openM()}
+  enBtn(true);
   setStep(2);
 }
+
+const fileInput = document.getElementById('fi');
+fileInput.addEventListener('change', function(e) {
+  if (e.target.files && e.target.files.length > 0) {
+    onFile(e.target.files[0]);
+  }
+});
 
 const dz=document.getElementById('dz');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
 dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))onFile(f)});
+dz.addEventListener('drop',e=>{
+  e.preventDefault();
+  dz.classList.remove('over');
+  const f=e.dataTransfer.files[0];
+  if(f) onFile(f);
+});
 
-function toB64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=e=>res(e.target.result.split(',')[1]);
-    r.onerror=()=>rej(new Error('فایل نەخوێندرایەوە'));
-    r.readAsDataURL(file);
+function getBase64Image(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64String = reader.result.split(',')[1];
+      resolve(base64String);
+    };
+    reader.onerror = error => reject(error);
   });
 }
 
-async function callAI(b64,mime){
-  const key=getK();
-  if(!key)throw new Error('API Key نییە');
+async function callAI(file){
+  if(GEMINI_API_KEY.includes('پەیسەی') || !GEMINI_API_KEY) {
+    throw new Error('تکایە لە ناو کۆدەکەدا API Key یەکەی جێمنای دابنێ پێش تاقیکردنەوە.');
+  }
 
-  const requestBody={
-    model: "llama-3.2-90b-vision-preview",
-    temperature: 0.1,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: `You are a precise data extraction assistant. Analyze this shipping/packing list document image.
+  const b64 = await getBase64Image(file);
+  const mime = file.type || 'image/jpeg';
 
+  const requestBody = {
+    contents: [{
+      parts: [
+        {text: `You are a precise data extraction assistant. Analyze this shipping/packing list document image.
 Extract ALL table data and return ONLY this exact JSON format, no other text:
 {
   "title": "document title shown in image",
@@ -291,43 +262,182 @@ Extract ALL table data and return ONLY this exact JSON format, no other text:
     }
   ]
 }
-
-Important: extract every row and column visible. Use empty string for empty cells. Return valid JSON only.`
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:${mime};base64,${b64}`
-            }
-          }
-        ]
-      }
-    ]
+Important: extract every row and column visible. Use empty string for empty cells. Return valid JSON only.`},
+        {inlineData: {mimeType: mime, data: b64}}
+      ]
+    }]
   };
 
-  const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
-    method:'POST',
-    headers:{
-      'Authorization': `Bearer ${key}`,
-      'Content-Type':'application/json'
-    },
-    body:JSON.stringify(requestBody)
-  });
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  // سیستەمی خۆکارانەی تێپەڕاندنی لیمیت (Auto Retry بە شێوازی Exponential Backoff)
+  let retries = 10;
+  let delay = 2000; // کاتی سەرەتایی ٢ چرکە
+  while(retries > 0) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestBody)
+      });
 
-  const json=await res.json();
+      const json = await res.json();
 
-  if(!res.ok){
-    const msg = json?.error?.message || 'هەڵەیەک ڕوویدا لە پەیوەندیکردن';
-    if(res.status === 401) throw new Error('API Key هەڵەیە — ئەی پی ئای نوێ دروست بکە');
-    if(res.status === 429) throw new Error('زۆرترین لیمیتت بەکارهێنا — کەمێک چاوەڕێ بکە');
-    if(msg.includes('size') || msg.includes('large')) throw new Error('قەبارەی وێنەکە زۆر گەورەیە — وێنەیەکی بچووکتر تاقی بکەرەوە');
-    throw new Error(msg);
+      if(!res.ok){
+        const msg = json?.error?.message || 'هەڵەیەک ڕوویدا';
+        // ئەگەر ئیرەری 429 لیمیت بدات
+        if(res.status === 429) {
+          retries--;
+          if(retries === 0) throw new Error('دوای چەندین هەوڵدان، هێشتا لیمیت پڕە. تکایە بۆ چەند خولەکێک وازی لێبهێنە یان VPN بکوژێنەوە/بگۆڕە.');
+          
+          showSt(`سێرڤەر سەرقاڵە، چاوەڕێ دەکات... (هەوڵی ماوە: ${retries})`, 'info', true);
+          await new Promise(resolve => setTimeout(resolve, delay)); // چاوەڕێکردن
+          delay = Math.min(delay * 2, 30000); // کاتی چاوەڕوانی دوو هێندە دەکات تا دەگاتە ٣٠ چرکە
+          continue; // دووبارە دەگەڕێتەوە سەرەتای وایل لوپەکە
+        }
+        
+        if(res.status === 400 || String(msg).includes('API_KEY')) throw new Error('API Key یەکە هەڵەیە یان کار ناکات');
+        throw new Error(msg);
+      }
+
+      const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if(!text) throw new Error('AI وەڵامی نەدا — دووبارە هەوڵ بدەرەوە');
+
+      // پاککردنەوەی تێکستەکە
+      const tick3 = '`' + '`' + '`';
+      const regex1 = new RegExp(tick3 + '(?:json)?', 'gi');
+      const regex2 = new RegExp(tick3, 'g');
+      const clean = text.replace(regex1, '').replace(regex2, '').trim();
+
+      try{
+        return JSON.parse(clean);
+      } catch(e) {
+        const m = clean.match(/\{[\s\S]*\}/);
+        if(m) return JSON.parse(m[0]);
+        throw new Error('داتای دروست نەدۆزرایەوە لە وێنەکەدا');
+      }
+      
+    } catch(err) {
+      if(err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+         throw new Error('کێشەی ئینتەرنێت هەیە یان سێرڤەر بلۆک کراوە. (تکایە دڵنیابە VPN پێیە).');
+      }
+      throw err; // فرێدانی هەڵەکە بۆ فەنکشنەکانی خوارەوە
+    }
   }
+}
 
-  const text = json?.choices?.[0]?.message?.content || '';
-  if(!text) throw new Error('AI وەڵامی نەدا — دووبارە هەوڵ بدەرەوە');
+async function doExtract(){
+  if(!curFile)return;
+  lock(true,'Excel دروست دەکرێت...');setStep(3);
+  try{
+    const data=await callAI(curFile);
+    extracted=data;renderTbl(data);renderMeta(data);
+    showSt('✓ Excel ئامادەیە — داونلۆد بکە','ok');
+    document.getElementById('bdl').style.display='flex';setStep(4);
+  }catch(e){
+    showSt('هەڵە: ' + e.message, 'err');
+    setStep(2);
+  }
+  finally{lock(false)}
+}
 
-  const clean = text.replace(/
-http://googleusercontent.com/immersive_entry_chip/0
+async function doPreview(){
+  if(!curFile)return;
+  lock(true,'AI وێنەکە دەخوێنێتەوە...');setStep(3);
+  try{
+    const data=await callAI(curFile);
+    extracted=data;renderTbl(data);renderMeta(data);
+    showSt('✓ داتاکان دەرکەوتن','ok');
+    document.getElementById('bdl').style.display='flex';setStep(4);
+  }catch(e){
+    showSt('هەڵە: ' + e.message, 'err');
+    setStep(2);
+  }
+  finally{lock(false)}
+}
 
-ئێستا دەتوانیت بەبێ بیرکردنەوە لە ڤی پی ئێن، بە ڕاستەوخۆیی لەسەر مۆبایل و کۆمپیوتەرەکەت بەکاریبهێنیت و کێشەی (429 Limit) دروست نابێتەوە! تاقیی بکەرەوە.
+function doReset(){
+  curFile=null;extracted=null;
+  document.getElementById('dz').style.display='block';
+  const p=document.getElementById('ipreview');p.style.display='none';p.src='';
+  document.getElementById('fm').style.display='none';
+  document.getElementById('bdl').style.display='none';
+  document.getElementById('pw').style.display='none';
+  document.getElementById('fi').value='';
+  enBtn(false);hideSt();clearTbl();setStep(2);
+}
+
+function doDownload(){
+  if(!extracted)return;
+  const wb=XLSX.utils.book_new();
+  let added=false;
+  for(const tbl of(extracted.tables||[])){
+    const H=tbl.headers||[],R=tbl.rows||[];
+    if(!H.length)continue;
+    const aoa=[H,...R.map(r=>H.map((_,i)=>{const v=r[i]!==undefined?r[i]:'';const n=Number(v);return(!isNaN(n)&&String(v).trim()!=='')?n:v}))];
+    const ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=H.map((h,ci)=>({wch:Math.min(Math.max(h.length,...R.map(r=>String(r[ci]||'').length))+3,35)}));
+    const sn=(tbl.name||'Sheet').replace(/[\\/:*?"<>|]/g,'').substring(0,31)||'Sheet';
+    XLSX.utils.book_append_sheet(wb,ws,sn);added=true;
+  }
+  if(!added){const ws=XLSX.utils.aoa_to_sheet([['No data']]);XLSX.utils.book_append_sheet(wb,ws,'Sheet1')}
+  const meta=Object.entries(extracted.metadata||{}).filter(([,v])=>v);
+  if(meta.length){const mws=XLSX.utils.aoa_to_sheet([['Field','Value'],...meta]);mws['!cols']=[{wch:22},{wch:36}];XLSX.utils.book_append_sheet(wb,mws,'Info')}
+  const fname=(extracted.title||'packing_list').replace(/[^\w\s\-]/g,'').trim()||'packing_list';
+  XLSX.writeFile(wb,fname+'.xlsx');
+  showSt('✓ Excel داونلۆد کرا!','ok');
+}
+
+function renderTbl(data){
+  const tw=document.getElementById('twrap'),te=document.getElementById('tempty'),rc=document.getElementById('rcnt');
+  const tables=data.tables||[];
+  if(!tables.length){te.style.display='block';tw.innerHTML='';tw.style.display='none';return}
+  te.style.display='none';let html='';let total=0;
+  for(const tbl of tables){
+    const H=tbl.headers||[],R=tbl.rows||[];total+=R.length;
+    html+=`<div style="padding:.65rem 1rem .2rem;font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border)">${tbl.name||'داتا'}</div>`;
+    html+='<div class="ts"><table class="dt"><thead><tr><th style="color:var(--text3);width:28px">#</th>';
+    H.forEach(h=>{html+=`<th>${h}</th>`});
+    html+='</tr></thead><tbody>';
+    R.forEach((row,i)=>{
+      html+=`<tr><td style="color:var(--text3);font-size:.7rem;font-family:monospace">${i+1}</td>`;
+      H.forEach((_,ci)=>{const v=row[ci]!==undefined?row[ci]:'';const num=v!==''&&!isNaN(Number(v));html+=`<td class="${num?'nm':''}">${v}</td>`});
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+  tw.innerHTML=html;tw.style.display='block';rc.textContent=total+' ڕیز';
+}
+
+function renderMeta(data){
+  const mc=document.getElementById('mcard'),mb=document.getElementById('mbody');
+  const entries=Object.entries(data.metadata||{}).filter(([,v])=>v);
+  if(!entries.length){mc.style.display='none';return}
+  mc.style.display='block';
+  mb.innerHTML='<div class="mgrid">'+entries.map(([k,v])=>`<div class="mi"><div class="mk">${k}</div><div class="mv">${v}</div></div>`).join('')+'</div>';
+}
+
+function clearTbl(){
+  document.getElementById('twrap').innerHTML='';document.getElementById('twrap').style.display='none';
+  document.getElementById('tempty').style.display='block';document.getElementById('mcard').style.display='none';
+  document.getElementById('rcnt').textContent='';
+}
+
+function enBtn(on){document.getElementById('bext').disabled=!on;document.getElementById('bprev').disabled=!on}
+function lock(on,msg=''){
+  enBtn(!on);document.getElementById('pw').style.display=on?'block':'none';
+  if(on)showSt(msg,'info',true);
+}
+function showSt(msg,type,spin=false){
+  const b=document.getElementById('stbox'),sp=document.getElementById('stspin');
+  b.className='status '+type;b.style.display='flex';
+  document.getElementById('stmsg').textContent=msg;
+  sp.style.display=spin?'block':'none';
+}
+function hideSt(){document.getElementById('stbox').style.display='none'}
+
+// دەستپێکردن ڕاستەوخۆ لە هەنگاوی دووەمەوە
+setStep(2);
+</script>
+</body>
+</html>
