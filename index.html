@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KMR — Packing List to Excel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c12;--s1:#0d1220;--s2:#111827;--s3:#1a2235;--s4:#1e2a40;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --accent:#f59e0b;--accent2:#fbbf24;--blue:#3b82f6;--green:#10b981;--red:#ef4444;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(245,158,11,.06) 0%,transparent 60%),
+             radial-gradient(ellipse 50% 50% at 10% 80%,rgba(59,130,246,.05) 0%,transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 1.25rem}
+/* Header */
+header{border-bottom:1px solid var(--border);background:rgba(8,12,18,.85);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0}
+.logo{display:flex;align-items:center;gap:.7rem}
+.logo-box{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#d97706);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.logo-text{font-size:.95rem;font-weight:700;color:var(--text)}
+.logo-sub{font-size:.68rem;color:var(--text3);font-family:monospace;margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:.6rem}
+.pill{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;border:1px solid rgba(245,158,11,.3);background:rgba(245,158,11,.08);color:var(--accent)}
+.key-btn{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:500;padding:5px 13px;border-radius:8px;border:1px solid var(--border2);background:var(--s2);color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
+.key-btn:hover{background:var(--s3);color:var(--text)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--red);transition:background .3s;flex-shrink:0}
+.dot.ok{background:var(--green)}
+/* Hero */
+.hero{text-align:center;padding:2.5rem 0 1.75rem}
+.hero h1{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;line-height:1.25;margin-bottom:.5rem}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p{color:var(--text2);font-size:.9rem;max-width:480px;margin:0 auto}
+/* Steps */
+.steps{display:flex;align-items:center;justify-content:center;margin:1.25rem 0 2rem;flex-wrap:wrap;gap:.25rem}
+.step{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--text3);transition:color .3s}
+.step.active{color:var(--accent)}.step.done{color:var(--green)}
+.sn{width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.sl{width:36px;height:1px;background:var(--border2);margin:0 .3rem}
+/* Grid */
+.grid{display:grid;grid-template-columns:320px 1fr;gap:1.1rem;align-items:start;margin-bottom:2rem}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+/* Card */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.ch{padding:.8rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.cb{padding:1.1rem}
+/* Drop zone */
+#dz{border:1.5px dashed var(--border2);border-radius:10px;padding:2.25rem 1.25rem;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+#dz:hover,#dz.over{border-color:var(--accent);background:rgba(245,158,11,.04)}
+#dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.di{font-size:1.8rem;display:block;margin-bottom:.6rem}.dt{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.25rem}.ds{font-size:.75rem;color:var(--text3)}
+/* Image */
+#ipreview{display:none;width:100%;border-radius:8px;border:1px solid var(--border2);margin-bottom:.7rem;max-height:190px;object-fit:contain;background:var(--s3)}
+.fmeta{display:none;justify-content:space-between;align-items:center;margin-bottom:.9rem;font-size:.76rem}
+.fn{font-weight:600;color:var(--text);word-break:break-all;margin-left:.5rem}.fs{color:var(--text3);white-space:nowrap;font-family:monospace}
+/* Status */
+.status{display:none;align-items:center;gap:.6rem;padding:.6rem .9rem;border-radius:8px;font-size:.8rem;margin-bottom:.75rem}
+.status.info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:#93c5fd}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#6ee7b7}
+.status.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+.spin{width:13px;height:13px;flex-shrink:0;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Progress */
+.pw{height:3px;background:var(--s3);border-radius:2px;margin:.9rem 0;overflow:hidden;display:none}
+@keyframes ind{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+.pb{height:100%;width:30%;background:linear-gradient(90deg,var(--accent),var(--blue));border-radius:2px;animation:ind 1.1s ease-in-out infinite}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.58rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;font-family:inherit;border:none;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.38;cursor:not-allowed;transform:none!important}
+.bp{background:var(--accent);color:#000;width:100%;justify-content:center;margin-bottom:.45rem}
+.bp:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
+.bg{background:var(--s3);color:var(--text2);border:1px solid var(--border2);flex:1;justify-content:center}
+.bg:hover:not(:disabled){background:var(--s4);color:var(--text)}
+.brow{display:flex;gap:.45rem;margin-bottom:.45rem}
+.bdl{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25);width:100%;justify-content:center;display:none;margin-top:.25rem}
+.bdl:hover:not(:disabled){background:rgba(16,185,129,.22)}
+/* Right */
+.rp{display:flex;flex-direction:column;gap:1.1rem}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.55rem}
+.mi{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:.55rem .85rem}
+.mk{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.mv{font-size:.82rem;font-weight:600;color:var(--accent2)}
+/* Table */
+.ts{overflow-x:auto}
+table.dt{width:100%;border-collapse:collapse;font-size:.78rem;min-width:440px}
+table.dt th{background:var(--s3);color:var(--text2);font-size:.68rem;font-weight:700;padding:7px 11px;text-align:right;border-bottom:1px solid var(--border2);white-space:nowrap;letter-spacing:.04em}
+table.dt td{padding:6px 11px;border-bottom:1px solid var(--border);color:var(--text);text-align:right}
+table.dt tr:hover td{background:rgba(255,255,255,.02)}
+table.dt tr:last-child td{border-bottom:none}
+.nm{font-family:monospace;color:var(--accent2)!important}
+.empty{text-align:center;padding:3rem 2rem;color:var(--text3);font-size:.85rem}
+.ei{font-size:1.75rem;display:block;margin-bottom:.6rem;opacity:.45}
+/* Modal */
+.mbg{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
+.mbg.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:16px;padding:1.75rem;width:100%;max-width:460px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.modal h2{font-size:1rem;font-weight:700;margin-bottom:.35rem}
+.modal p{font-size:.8rem;color:var(--text2);line-height:1.65;margin-bottom:1.1rem}
+.ms{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;margin-bottom:.45rem;font-size:.78rem;color:var(--text2);display:flex;align-items:center;gap:.55rem}
+.sb{background:var(--accent);color:#000;font-size:.62rem;font-weight:800;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ml{color:var(--accent);text-decoration:underline}
+label.lbl{font-size:.76rem;font-weight:600;color:var(--text2);display:block;margin:.9rem 0 .35rem}
+.modal input{width:100%;padding:.6rem .9rem;background:var(--s3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:.83rem;font-family:monospace;outline:none}
+.modal input:focus{border-color:var(--accent)}
+.mf{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.1rem}
+footer{border-top:1px solid var(--border);text-align:center;padding:1.1rem;font-size:.72rem;color:var(--text3)}
+.fade{animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="wrap">
+  <div class="hdr">
+   <div class="logo">
+    <div class="logo-box">📦</div>
+    <div><div class="logo-text">KMR Logistics</div><div class="logo-sub">packing-list → excel</div></div>
+   </div>
+   <div class="hdr-r">
+    <span class="pill">Gemini AI</span>
+    <button class="key-btn" onclick="openM()"><span class="dot" id="dot"></span><span id="klbl">API Key</span></button>
+   </div>
+  </div>
+ </div>
+</header>
+
+<div class="wrap">
+ <div class="hero fade">
+  <h1>وێنەی Packing List بنێرە<br><em>Excel وەربگرە</em></h1>
+  <p>Gemini AI وێنەکە دەخوێنێتەوە و خۆکار دەیکاتە فایلی Excel پیشەیی</p>
+ </div>
+ <div class="steps">
+  <div class="step active" id="st1"><div class="sn">١</div><span>API Key</span></div>
+  <div class="sl"></div>
+  <div class="step" id="st2"><div class="sn">٢</div><span>وێنە هەڵبژێرە</span></div>
+  <div class="sl"></div>
+  <div class="step" id="st3"><div class="sn">٣</div><span>AI دەخوێنێتەوە</span></div>
+  <div class="sl"></div>
+  <div class="step" id="st4"><div class="sn">٤</div><span>Excel داونلۆد</span></div>
+ </div>
+ <div class="grid">
+  <div>
+   <div class="card fade">
+    <div class="ch"><span class="ct">هەڵبژاردنی وێنە</span><span style="font-size:.68rem;color:var(--text3)">PNG · JPG · WEBP</span></div>
+    <div class="cb">
+     <div id="dz">
+      <input type="file" id="fi" accept="image/*" onchange="onFile(this.files[0])">
+      <span class="di">🖼️</span><p class="dt">وێنە بکێشە ئێرە</p><p class="ds">یان کلیک بکە بۆ هەڵبژاردن</p>
+     </div>
+     <img id="ipreview" alt="">
+     <div class="fmeta" id="fm"><span class="fn" id="fname"></span><span class="fs" id="fsize"></span></div>
+     <div class="status" id="stbox"><span class="spin" id="stspin" style="display:none"></span><span id="stmsg"></span></div>
+     <div class="pw" id="pw"><div class="pb"></div></div>
+     <button class="btn bp" id="bext" disabled onclick="doExtract()">✦ &nbsp;بکاتەوە بە Excel</button>
+     <div class="brow">
+      <button class="btn bg" id="bprev" disabled onclick="doPreview()">👁 &nbsp;پێشبینی</button>
+      <button class="btn bg" onclick="doReset()">↺ نوێ</button>
+     </div>
+     <button class="btn bdl" id="bdl" onclick="doDownload()">⬇ &nbsp;داونلۆدی Excel</button>
+    </div>
+   </div>
+  </div>
+  <div class="rp">
+   <div class="card fade" id="mcard" style="display:none">
+    <div class="ch"><span class="ct">زانیاری دۆکیومێنت</span></div>
+    <div class="cb" id="mbody"></div>
+   </div>
+   <div class="card fade">
+    <div class="ch"><span class="ct">داتاکانی دەرکەوتوو</span><span id="rcnt" style="font-size:.7rem;color:var(--text3);font-family:monospace"></span></div>
+    <div style="padding:0">
+     <div class="empty" id="tempty"><span class="ei">📋</span>پێشبینی داتاکان ئێرە دەردەکەوێت<br>دوای کلیک کردن لەسەر <b>پێشبینی</b></div>
+     <div class="ts" id="twrap" style="display:none"></div>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<footer>KMR Logistics · Powered by Google Gemini 2.0 Flash · بەبێ سێرڤەر — تەنها وێبگەڕ</footer>
+
+<div class="mbg" id="mbg" onclick="closeMBg(event)">
+ <div class="modal">
+  <h2>🔑 &nbsp;دانانی Gemini API Key</h2>
+  <p>API Key پێویستە بۆ ئەوەی Gemini AI وێنەکانت بخوێنێتەوە. تەواو فری — ڕۆژانە ١٥٠٠ وێنە.</p>
+  <div class="ms"><span class="sb">١</span>بڕۆ بۆ &nbsp;<a class="ml" href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></div>
+  <div class="ms"><span class="sb">٢</span>لەگەڵ Gmail بچۆ ژوورەوە</div>
+  <div class="ms"><span class="sb">٣</span>کلیک بکە &nbsp;<b>Create API Key</b> &nbsp;— کۆپی بکە</div>
+  <div class="ms"><span class="sb">٤</span>ئێرە بنووسە و خەزن بکە</div>
+  <label class="lbl">Gemini API Key</label>
+<input type="password" id="kinput" placeholder="AIzaSy..." autocomplete="off" dir="ltr" style="text-align: left; letter-spacing: 1px;">  <div class="mf">
+   <button class="btn bg" onclick="closeM()">داخستن</button>
+   <button class="btn bp" style="width:auto" onclick="saveKey()">✓ &nbsp;خەزن بکە</button>
+  </div>
+ </div>
+</div>
+
+<script>
+const SK='kmr_gkey';
+let curFile=null,extracted=null;
+
+function getK(){return localStorage.getItem(SK)||''}
+function chkKey(){
+  const k=getK();
+  document.getElementById('dot').className='dot'+(k?' ok':'');
+  document.getElementById('klbl').textContent=k?'API Key ✓':'API Key';
+  setStep(k?2:1);
+}
+function openM(){document.getElementById('kinput').value=getK();document.getElementById('mbg').classList.add('open')}
+function closeM(){document.getElementById('mbg').classList.remove('open')}
+function closeMBg(e){if(e.target===document.getElementById('mbg'))closeM()}
+function saveKey(){
+  const k=document.getElementById('kinput').value.trim();
+  if(!k){alert('تکایە API Key بنووسە');return}
+  localStorage.setItem(SK,k);closeM();chkKey();
+  showSt('✓ API Key خەزن کرا','ok');
+  if(curFile)enBtn(true);
+}
+
+function setStep(n){
+  ['st1','st2','st3','st4'].forEach((id,i)=>{
+    const el=document.getElementById(id),sn=el.querySelector('.sn');
+    el.className='step'+(i+1<n?' done':i+1===n?' active':'');
+    sn.textContent=i+1<n?'✓':['١','٢','٣','٤'][i];
+  });
+}
+
+function onFile(f){
+  if(!f)return;
+  curFile=f;extracted=null;
+  const r=new FileReader();
+  r.onload=e=>{const p=document.getElementById('ipreview');p.src=e.target.result;p.style.display='block'};
+  r.readAsDataURL(f);
+  document.getElementById('dz').style.display='none';
+  document.getElementById('fm').style.display='flex';
+  document.getElementById('fname').textContent=f.name;
+  document.getElementById('fsize').textContent=(f.size/1024).toFixed(0)+' KB';
+  document.getElementById('bdl').style.display='none';
+  clearTbl();hideSt();
+  if(getK())enBtn(true);
+  else{showSt('تکایە پێش هەموو شتێک API Key بدەرەوە','err');openM()}
+  setStep(2);
+}
+
+const dz=document.getElementById('dz');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))onFile(f)});
+
+function toB64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=e=>res(e.target.result.split(',')[1]);
+    r.onerror=()=>rej(new Error('فایل نەخوێندرایەوە'));
+    r.readAsDataURL(file);
+  });
+}
+
+async function callGemini(b64,mime){
+  const key=getK();
+  if(!key)throw new Error('API Key نییە');
+
+  const requestBody={
+    contents:[{
+      parts:[
+        {text:`You are a precise data extraction assistant. Analyze this shipping/packing list document image.
+
+Extract ALL table data and return ONLY this exact JSON, no other text:
+{
+  "title": "document title shown in image",
+  "metadata": {"Container No": "value", "Date": "value", "Vessel": "value"},
+  "tables": [
+    {
+      "name": "Main Table",
+      "headers": ["Column1","Column2","Column3"],
+      "rows": [["val","val","val"],["val","val","val"]]
+    }
+  ]
+}
+
+Important: extract every row and column visible. Use empty string for empty cells. Return valid JSON only.`},
+        {inlineData:{mimeType:mime,data:b64}}
+      ]
+    }]
+  };
+
+  const url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key;
+
+  const res=await fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(requestBody)
+  });
+
+  const json=await res.json();
+
+  if(!res.ok){
+    const msg=json?.error?.message||'هەڵە '+res.status;
+    if(res.status===400||String(msg).includes('API_KEY'))throw new Error('API Key هەڵەیە — Key تازە دروست بکە');
+    if(res.status===429)throw new Error('لیمیت داگرتووە — چەند خولەک چاوەڕێ بکە');
+    throw new Error(msg);
+  }
+
+  const text=json?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  if(!text)throw new Error('Gemini وەڵامی نەدا — دووبارە هەوڵ بدەرەوە');
+
+  const clean=text.replace(/```json/g,'').replace(/```/g,'').trim();
+  try{return JSON.parse(clean)}
+  catch{
+    const m=clean.match(/\{[\s\S]*\}/);
+    if(m)return JSON.parse(m[0]);
+    throw new Error('داتای دروست نەدۆزرایەوە — دووبارە هەوڵ بدەرەوە');
+  }
+}
+
+async function doExtract(){
+  if(!curFile)return;
+  lock(true,'Excel دروست دەکرێت...');setStep(3);
+  try{
+    const b64=await toB64(curFile);
+    const data=await callGemini(b64,curFile.type);
+    extracted=data;renderTbl(data);renderMeta(data);
+    showSt('✓ Excel ئامادەیە — داونلۆد بکە','ok');
+    document.getElementById('bdl').style.display='flex';setStep(4);
+  }catch(e){showSt(e.message,'err');setStep(2)}
+  finally{lock(false)}
+}
+
+async function doPreview(){
+  if(!curFile)return;
+  lock(true,'AI وێنەکە دەخوێنێتەوە...');setStep(3);
+  try{
+    const b64=await toB64(curFile);
+    const data=await callGemini(b64,curFile.type);
+    extracted=data;renderTbl(data);renderMeta(data);
+    showSt('✓ داتاکان دەرکەوتن','ok');
+    document.getElementById('bdl').style.display='flex';setStep(4);
+  }catch(e){showSt(e.message,'err');setStep(2)}
+  finally{lock(false)}
+}
+
+function doReset(){
+  curFile=null;extracted=null;
+  document.getElementById('dz').style.display='block';
+  const p=document.getElementById('ipreview');p.style.display='none';p.src='';
+  document.getElementById('fm').style.display='none';
+  document.getElementById('bdl').style.display='none';
+  document.getElementById('pw').style.display='none';
+  document.getElementById('fi').value='';
+  enBtn(false);hideSt();clearTbl();setStep(getK()?2:1);
+}
+
+function doDownload(){
+  if(!extracted)return;
+  const wb=XLSX.utils.book_new();
+  let added=false;
+  for(const tbl of(extracted.tables||[])){
+    const H=tbl.headers||[],R=tbl.rows||[];
+    if(!H.length)continue;
+    const aoa=[H,...R.map(r=>H.map((_,i)=>{const v=r[i]!==undefined?r[i]:'';const n=Number(v);return(!isNaN(n)&&String(v).trim()!=='')?n:v}))];
+    const ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=H.map((h,ci)=>({wch:Math.min(Math.max(h.length,...R.map(r=>String(r[ci]||'').length))+3,35)}));
+    const sn=(tbl.name||'Sheet').replace(/[:\\\/\?\*\[\]]/g,'').substring(0,31)||'Sheet';
+    XLSX.utils.book_append_sheet(wb,ws,sn);added=true;
+  }
+  if(!added){const ws=XLSX.utils.aoa_to_sheet([['No data']]);XLSX.utils.book_append_sheet(wb,ws,'Sheet1')}
+  const meta=Object.entries(extracted.metadata||{}).filter(([,v])=>v);
+  if(meta.length){const mws=XLSX.utils.aoa_to_sheet([['Field','Value'],...meta]);mws['!cols']=[{wch:22},{wch:36}];XLSX.utils.book_append_sheet(wb,mws,'Info')}
+  const fname=(extracted.title||'packing_list').replace(/[^\w\s\-]/g,'').trim()||'packing_list';
+  XLSX.writeFile(wb,fname+'.xlsx');
+  showSt('✓ Excel داونلۆد کرا!','ok');
+}
+
+function renderTbl(data){
+  const tw=document.getElementById('twrap'),te=document.getElementById('tempty'),rc=document.getElementById('rcnt');
+  const tables=data.tables||[];
+  if(!tables.length){te.style.display='block';tw.innerHTML='';tw.style.display='none';return}
+  te.style.display='none';let html='';let total=0;
+  for(const tbl of tables){
+    const H=tbl.headers||[],R=tbl.rows||[];total+=R.length;
+    html+=`<div style="padding:.65rem 1rem .2rem;font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border)">${tbl.name||'داتا'}</div>`;
+    html+='<div class="ts"><table class="dt"><thead><tr><th style="color:var(--text3);width:28px">#</th>';
+    H.forEach(h=>{html+=`<th>${h}</th>`});
+    html+='</tr></thead><tbody>';
+    R.forEach((row,i)=>{
+      html+=`<tr><td style="color:var(--text3);font-size:.7rem;font-family:monospace">${i+1}</td>`;
+      H.forEach((_,ci)=>{const v=row[ci]!==undefined?row[ci]:'';const num=v!==''&&!isNaN(Number(v));html+=`<td class="${num?'nm':''}">${v}</td>`});
+      html+='</tr>';
+    });
+    html+='</tbody></table></div>';
+  }
+  tw.innerHTML=html;tw.style.display='block';rc.textContent=total+' ڕیز';
+}
+
+function renderMeta(data){
+  const mc=document.getElementById('mcard'),mb=document.getElementById('mbody');
+  const entries=Object.entries(data.metadata||{}).filter(([,v])=>v);
+  if(!entries.length){mc.style.display='none';return}
+  mc.style.display='block';
+  mb.innerHTML='<div class="mgrid">'+entries.map(([k,v])=>`<div class="mi"><div class="mk">${k}</div><div class="mv">${v}</div></div>`).join('')+'</div>';
+}
+
+function clearTbl(){
+  document.getElementById('twrap').innerHTML='';document.getElementById('twrap').style.display='none';
+  document.getElementById('tempty').style.display='block';document.getElementById('mcard').style.display='none';
+  document.getElementById('rcnt').textContent='';
+}
+
+function enBtn(on){document.getElementById('bext').disabled=!on;document.getElementById('bprev').disabled=!on}
+function lock(on,msg=''){
+  enBtn(!on);document.getElementById('pw').style.display=on?'block':'none';
+  if(on)showSt(msg,'info',true);
+}
+function showSt(msg,type,spin=false){
+  const b=document.getElementById('stbox'),sp=document.getElementById('stspin');
+  b.className='status '+type;b.style.display='flex';
+  document.getElementById('stmsg').textContent=msg;
+  sp.style.display=spin?'block':'none';
+}
+function hideSt(){document.getElementById('stbox').style.display='none'}
+
+chkKey();
+if(!getK())setTimeout(openM,700);
+</script>
+</body>
+</html>
